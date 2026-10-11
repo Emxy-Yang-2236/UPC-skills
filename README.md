@@ -4,75 +4,75 @@
 
 面向 University Physics Competition（UPC）的物理研究 skill：从题目、假设与模型，到可复现计算、证据核验和完整参赛论文。默认中文讨论、英文写作。这是独立的备赛工具，与赛事主办方无隶属或背书关系。
 
-它是 AI 助手读取的工作方法与工具包，复制后即可使用，无需重新“训练”模型。可以按团队习惯指定讨论与写作语言。
 
 内含六个按需加载的功能模块：审题、资料研究、物理建模、计算与实验、验证、论文写作。机制细节与开放设计两条路线按问题特点选择，可以组合。核心方法由 2021、2022、2023、2025 年题目与 16 篇论文的比较提炼，发布内容为方法摘要、原创流程、脚本及模板。
 
-## 1. 分享与安装
+## 1. 如何安装
 
-### 推荐：Git clone 安装
-
-在本 GitHub 仓库页面点击 **Code → HTTPS** 复制地址，将下面的 `REPOSITORY_URL` 替换为该地址。
-
-macOS / Linux 终端：
+### macOS / Linux
 
 ```bash
-mkdir -p ~/.codex/skills
-git clone REPOSITORY_URL ~/.codex/skills/upc-physics
+mkdir -p ~/.agents/skills
+git clone REPOSITORY_URL ~/.agents/skills/upc-physics
 ```
 
-Windows PowerShell：
+### Windows（PowerShell）
 
 ```powershell
-New-Item -ItemType Directory -Force "$env:USERPROFILE/.codex/skills" | Out-Null
-git clone REPOSITORY_URL "$env:USERPROFILE/.codex/skills/upc-physics"
+New-Item -ItemType Directory -Force "$env:USERPROFILE/.agents/skills" | Out-Null
+git clone REPOSITORY_URL "$env:USERPROFILE/.agents/skills/upc-physics"
 ```
 
-无需编译或安装 Python 依赖。需要已安装 Git；仅在运行附带脚本时才需要 Python。若目标目录中已有旧版本，先将它移到别处备份，再克隆；保留自己修改过的内容。若设置了 `CODEX_HOME`，请将目标位置换成该目录下的 `skills/upc-physics`。
-
-安装后的入口应是：
-
-```text
-~/.codex/skills/upc-physics/SKILL.md
-```
-
-`~` 表示自己的用户主目录。重启 Codex 后新建会话，在研究项目目录中调用 `$upc-physics`。若没有被识别，直接给出实际路径并要求读取该目录的 `SKILL.md` 及其引用文件，仍可使用。六个功能模块随主技能加载，无需分别安装。
-
-更新到仓库 `main` 分支的最新内容：
+### 更新
 
 ```bash
-git -C ~/.codex/skills/upc-physics pull --ff-only
+# macOS / Linux
+git -C ~/.agents/skills/upc-physics pull --ff-only
 ```
 
-Windows 将路径替换为 `"$env:USERPROFILE/.codex/skills/upc-physics"`。如果自己做过修改导致更新被阻止，先处理本地修改。队内需要固定同一公开版本时，执行下面的命令，并替换仓库地址和目标目录；Windows 同样换用自己的安装路径：
-
-```bash
-git clone --branch v0.2.0 --depth 1 REPOSITORY_URL ~/.codex/skills/upc-physics
+```powershell
+# Windows PowerShell
+git -C "$env:USERPROFILE/.agents/skills/upc-physics" pull --ff-only
 ```
 
-固定标签安装不会跟随 `main` 更新，后续升级应显式选择新版本标签。
-
-### 离线分享：Release 压缩包
-
-从本仓库的 GitHub Releases 下载 `upc-physics-v0.2.0.zip`，解压得到完整的 `upc-physics/` 文件夹，将其放入上述技能目录。保留全部文件，包括许可与来源说明，队员间可直接分享这个压缩包。
-
-同版本的 `.skill` 文件与 `.zip` 内容相同，供接受该扩展名的工具导入。`SHA256SUMS` 用于核对下载文件。压缩包安装不包含 Git 历史，升级时下载新版本。GitHub 自动生成的 “Source code” 包解压后需将包含 `SKILL.md` 的目录命名为 `upc-physics`。
-
-**在其他 AI 编程助手中：**按该产品的技能安装方式放置文件，或要求助手读取完整文件夹的入口。不同产品的自动发现方式不同，不能保证 `$upc-physics` 通用；完整执行需要助手能够读写本地文件并运行命令。
-
-## 2. 环境与材料
+## 2. 需要的环境与材料
 
 | 项目 | 需要准备什么 |
 | --- | --- |
-| 技能核心 | 本包已包含流程、四年案例摘要、工具与模板；无需复制开发项目的 `example/`、`training/` 或安装全部第三方 skills |
+| 技能核心 | 本包已包含流程、四年案例摘要、工具与模板；|
 | 当前研究 | 完整题面、当前比赛要求，以及已有模型、代码或数据；从零开始时只需先提供题面 |
 | 附带 Python 工具 | Python **3.9+**，仅使用标准库，无额外 `pip` 依赖；实际仿真库按题目另行选择 |
 | MATLAB / Simulink | 可选；选择它们时需自行安装、具备相应许可及所需工具箱，先检查环境再运行 |
-| PDF、联网与排版 | 按任务提供读取、检索或编译工具；技能包不捆绑这些软件或服务 |
 
-案例中的 `example/...` 和 `training/...` 是开发来源定位，不是运行依赖。只有核对原文、重新分析案例时才需要另行提供相应材料。第三方 skills 有则按需使用，缺失时继续使用内置流程；来源说明保留在 [third-party.md](references/third-party.md)。
 
-## 3. 直接这样开始
+## 3. 子 skill 结构
+
+`upc-physics` 是主入口，按当前任务读取六个功能子 skill，无需分别安装：
+
+| 子 skill | 主要职责 |
+| --- | --- |
+| [upc-analyze](modules/analyze/SKILL.md) | 审题、拆解要求、比较研究路线 |
+| [upc-research](modules/research/SKILL.md) | 阅读材料、检索文献、核实参数与来源 |
+| [upc-model](modules/model/SKILL.md) | 确定假设、建立方程、比较模型 |
+| [upc-compute](modules/compute/SKILL.md) | 实现仿真、设计实验、处理数据 |
+| [upc-validate](modules/validate/SKILL.md) | 检查物理一致性、数值误差与证据 |
+| [upc-write](modules/write/SKILL.md) | 从真实研究结果组织、撰写和完善论文 |
+
+建模另有“机制细节”和“开放设计”两条路线，可按题目组合，不固定对应 A/B 题。
+
+## 4. 如何使用
+
+**调用主 skill：**
+
+安装后在 Codex 中新建会话，输入 `$upc-physics`，同时提供题面或已有材料的路径。若未被识别，直接让 agent 读取安装目录中的 `SKILL.md` 及其引用文件。其他 agent 的调用方式以其技能支持为准。
+
+**配合自备的 grill 技能讨论建模：**
+
+最初构思阶段，建议同时调用Mattpocok-skills中的grill功能，让 agent 分轮提问、比较选择，与你确定研究方案。第三方 grill 技能需自行准备，调用名以实际安装结果为准；下面以 `$mattpocock-skills:grilling` 为例：
+
+> 使用 $upc-physics，并结合 $mattpocock-skills:grilling。题面在 problem.pdf，先和我讨论方案。按“题目目标与评价指标 → 系统边界、主导机制和假设 → 状态变量、方程框架、初始/边界条件 → 参数来源与验证方法”的顺序推进。每轮只问当前可决定的关键问题，编号并给出推荐方案、理由和取舍，等我回答后再进入依赖这些答案的问题。可查证的事实请先读文件或检索。最后整理出假设表和大体建模方案，包含最简基线、可选改进及待验证问题；我确认开始执行后再进入仿真或实验。
+
+你可以逐题修改，也可以回复“本轮都按推荐”。讨论确认的是研究计划，假设的适用性仍需后续检验。
 
 **新题目：**
 
@@ -92,9 +92,9 @@ git clone --branch v0.2.0 --depth 1 REPOSITORY_URL ~/.codex/skills/upc-physics
 
 流程按需要在“审题 → 资料 → 建模 → 计算/实验 → 验证 → 写作”之间迭代，已有成果可以从中途进入。机制细节与开放设计两条路线可以组合，不固定对应 A/B 题。
 
-## 4. 可选的工具自检
+## 5. 可选的工具自检 （若建模阶段出现异常）
 
-在解压后的 `upc-physics/` 目录打开终端，运行：
+在 `upc-physics/` 目录打开终端，运行：
 
 ```text
 python3 scripts/numerical_checks.py biquad --a1 -1.9 --a2 0.88
@@ -102,17 +102,10 @@ python3 scripts/numerical_checks.py biquad --a1 -1.9 --a2 0.88
 
 应返回 JSON，极点约为 `1.1` 与 `0.8`，`stable` 为 `false`。这是预设的不稳定示例，正常退出表示诊断工具成功运行。如果本机 Python 命令是 `python` 或 `py -3`，替换命令开头即可。
 
-也可让助手调用 `scripts/init_project.py` 创建新的研究目录，再用 `scripts/audit_project.py` 检查交付材料。新建空项目得到 `ready=false` 属于正常情况；审计只检查材料结构与关联，不证明物理结论正确。详见 [研究项目约定](references/project-contract.md)。MATLAB 的可选检查见 [软件适配](references/software.md)。
+也可让agent调用 `scripts/init_project.py` 创建新的研究目录，再用 `scripts/audit_project.py` 检查交付材料。新建空项目得到 `ready=false` 属于正常情况；审计只检查材料结构与关联，不证明物理结论正确。详见 [研究项目约定](references/project-contract.md)。MATLAB 的可选检查见 [软件适配](references/software.md)。
 
 审计中的 `integrity_ok` 表示文件与关联完整性，`status_findings` 列出未完成或未通过的登记项。保留失败试算时，文件可以齐全而 `ready` 仍为 false；不要删掉失败或放宽标准来获得通过。
 
-## 5. 队内交接
-
-共享同一版技能包，以及完整的研究项目文件夹：题面、研究状态、参数和来源、代码、真实数据、图表及稿件。文件间尽量使用项目内相对路径，代码不要依赖某位队员的个人目录。科学研究记录用于复现；本技能不要求保存 AI 使用记录或对话档案。
-
-仿真与实测必须区分；论文只使用有依据的结果。核心案例方法仍来自 2021、2022、2023、2025 年材料，本版补充实际使用后的通用执行方法，未附独立练习的题目、数据或解答。保留题须明确授权后使用；其反馈一旦参与修订，后续同题只能作为回归检查。比赛要求以当届核实的规则为准。
-
-附带 Python 工具已在 macOS 的独立解压目录用 Python 3.9 与 3.12 检查；Windows/Linux 尚未实机测试。附带基础 MATLAB 算例已在 macOS / R2026b 实机通过，其他产品与工具箱仍须按需核验。助手的模型和工具能力会影响研究效果，复制技能不保证获得相同结果。
 
 ## 6. 许可与来源
 
