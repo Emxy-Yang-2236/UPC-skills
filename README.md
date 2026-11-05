@@ -9,30 +9,18 @@
 
 ## 1. 如何安装
 
-### macOS / Linux
+需要 Node.js 22.20.0 或更高版本。`-g` 表示全局安装，当前用户的所有 Codex 项目都可使用。
 
 ```bash
-mkdir -p ~/.agents/skills
-git clone REPOSITORY_URL ~/.agents/skills/upc-physics
-```
-
-### Windows（PowerShell）
-
-```powershell
-New-Item -ItemType Directory -Force "$env:USERPROFILE/.agents/skills" | Out-Null
-git clone REPOSITORY_URL "$env:USERPROFILE/.agents/skills/upc-physics"
+npx skills add Emxy-Yang-2236/UPC-skills --skill upc-physics --agent codex -g
 ```
 
 ### 更新
 
-```bash
-# macOS / Linux
-git -C ~/.agents/skills/upc-physics pull --ff-only
-```
+首次改用 `npx` 时先执行上面的安装命令，之后按名称更新这个 skill。
 
-```powershell
-# Windows PowerShell
-git -C "$env:USERPROFILE/.agents/skills/upc-physics" pull --ff-only
+```bash
+npx skills update upc-physics -g
 ```
 
 ## 2. 需要的环境与材料
