@@ -20,6 +20,8 @@ description: Interpret a UPC problem, identify outputs and constraints, compare 
 
 ## 离开本阶段的标准
 
+多人共用研究仓库时，把题意、定义和逐项要求存到 `design/problem.md`，在根 README 写明当前负责人和下一步。确认路线后依 [团队交接约定](../../references/team-handoff.md) 保存版本，使建模者能接续。
+
 - 每条要求都有预期回答形式和验证思路。
 - 影响路线的关键模糊处已解决，或明确作为情景分支。
 - 给出能实际开始的下一步，如查一个参数、推一个守恒式或运行一个基线，不止“深入研究”。

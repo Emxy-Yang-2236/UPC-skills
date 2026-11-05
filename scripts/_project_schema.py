@@ -10,5 +10,10 @@ TABLES = {
 }
 
 
+def table_path(name, version):
+    """All paths stored in the tables themselves remain project-relative."""
+    return f"experiment/records/{name}.csv" if version == 2 else f"{name}.csv"
+
+
 def split_items(value):
     return [part.strip() for part in value.split(";") if part.strip()]

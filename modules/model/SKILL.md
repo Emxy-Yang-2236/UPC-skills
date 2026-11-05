@@ -28,6 +28,8 @@ description: Build and compare physics models with explicit assumptions, conserv
 
 ## 交接
 
+团队从讨论切换到另一位实验负责人时，按 [第一次交接](../../references/team-handoff.md) 填完 `design/` 的题目、模型和协议。将已确认的取舍及尚待实验检验的假设写清，交付时给出新电脑上第一项工况的动作、输入、预期输出和判据。
+
 给计算模块一份可实施模型，而不只是公式截图：状态向量、导数/代数约束、参数单位、初边值、事件处理、基准结果及预期数量级。给验证模块本模型最可能失效的 2–3 处及对应检查。
 
 关联案例见 [方法 C2–C5、C8](../../references/methods.md)，按需读相应年份案例。

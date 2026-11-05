@@ -8,7 +8,8 @@ import math
 from pathlib import Path
 import sys
 
-from _project_schema import TABLES, split_items
+from _project_schema import TABLES, split_items, table_path
+from handoff import DOCUMENTS, check_folder
 
 
 LIMITATION = "Structural audit only: independently check physics, citations, manuscript content and contest rules."
@@ -85,12 +86,37 @@ def audit(project):
                 errors.append(f"{where}: unknown ID {item}")
         return ids
 
+    version = 1
+    config_path = local_file("project.json", "project.json")
+    if config_path is not None:
+        try:
+            config = json.loads(config_path.read_text(encoding="utf-8"),
+                                parse_constant=reject_json_constant, object_pairs_hook=unique_json_object)
+            if not isinstance(config, dict):
+                raise ValueError("must be a JSON object")
+            candidate_version = config.get("format_version")
+            if type(candidate_version) is int and candidate_version in (1, 2):
+                version = candidate_version
+            else:
+                errors.append("project.json: format_version must be the integer 1 or 2")
+            if not isinstance(config.get("title"), str) or not config["title"].strip():
+                errors.append("project.json: missing title")
+            allowed(config, "stage", {"analyze", "research", "model", "compute", "validate", "write", "deliver"}, "project.json")
+            paper = config.get("paper_path", "")
+            if isinstance(paper, str):
+                local_file(paper, "project.json paper_path")
+            else:
+                errors.append("project.json: paper_path must be a string")
+        except (OSError, UnicodeError, ValueError) as exc:
+            errors.append(f"project.json: {exc}")
+
     for name, fields in TABLES.items():
         rows = []
         try:
-            table_path = local_file(f"{name}.csv", f"{name}.csv")
-            if table_path is not None:
-                with table_path.open(encoding="utf-8-sig", newline="") as handle:
+            relative = table_path(name, version)
+            table_file = local_file(relative, relative)
+            if table_file is not None:
+                with table_file.open(encoding="utf-8-sig", newline="") as handle:
                     reader = csv.DictReader(handle, strict=True)
                     if reader.fieldnames is None or set(reader.fieldnames) != set(fields) or len(reader.fieldnames) != len(fields):
                         errors.append(f"{name}.csv: expected columns {list(fields)}")
@@ -201,32 +227,24 @@ def audit(project):
         if row["status"] != "completed":
             status_issue(f"{where}: not completed", "runs", row["id"], row["status"])
 
-    config_path = local_file("project.json", "project.json")
-    if config_path is not None:
-        try:
-            config = json.loads(config_path.read_text(encoding="utf-8"),
-                                parse_constant=reject_json_constant, object_pairs_hook=unique_json_object)
-            if not isinstance(config, dict):
-                raise ValueError("must be a JSON object")
-            if type(config.get("format_version")) is not int or config["format_version"] != 1:
-                errors.append("project.json: format_version must be the integer 1")
-            if not isinstance(config.get("title"), str) or not config["title"].strip():
-                errors.append("project.json: missing title")
-            allowed(config, "stage", {"analyze", "research", "model", "compute", "validate", "write", "deliver"}, "project.json")
-            paper = config.get("paper_path", "")
-            if isinstance(paper, str):
-                local_file(paper, "project.json paper_path")
-            else:
-                errors.append("project.json: paper_path must be a string")
-        except (OSError, UnicodeError, ValueError) as exc:
-            errors.append(f"project.json: {exc}")
+    handoffs = {}
+    if version == 2:
+        for kind in DOCUMENTS:
+            _, broken, pending = check_folder(kind, root / kind)
+            handoffs[kind] = {"package_ok": not (broken or pending), "errors": broken + pending}
+            errors.extend(f"{kind}: {message}" for message in broken)
+            for message in pending:
+                status_issue(f"{kind}: {message}", "handoffs", kind, "pending")
     warnings.append(LIMITATION)
     state_messages = {finding["message"] for finding in status_findings}
     integrity_errors = [error for error in errors if error not in state_messages]
-    return {"ready": not errors, "integrity_ok": not integrity_errors,
+    result = {"ready": not errors, "integrity_ok": not integrity_errors,
             "integrity_errors": integrity_errors, "status_findings": status_findings,
             "errors": errors, "warnings": warnings,
             "counts": {name: len(rows) for name, rows in tables.items()}}
+    if version == 2:
+        result["handoffs"] = handoffs
+    return result
 
 
 def main():

@@ -1,6 +1,6 @@
 ---
 name: upc-physics
-description: Guide UPC / UCP physics competition work from problem interpretation and source reading through physical modeling, simulation or experiment, validation, and a complete evidence-based English paper. Use for UPC preparation, contest problems, checking existing research, or turning research results into a contest manuscript.
+description: Guide UPC / UCP physics competition work from problem interpretation and modeling through simulation, validation and an evidence-based English paper. Use for contest research, Git-based team handoffs, executable experiment designs and standalone reports for writers.
 license: MIT
 ---
 
@@ -41,6 +41,8 @@ license: MIT
 6. 赛事格式、时限和提交规则以本次用户提供或核实的规则为准，不把往年论文版式、其他竞赛惯例或第三方模板当现行规定。
 
 ## 研究项目与工具
+
+团队共用 Git 仓库、换电脑/负责人或只交一份报告时，先读 [团队仓库与两次交接](references/team-handoff.md)。在已有研究仓库接续工作；新团队目录用 `init_project.py --team`。设计确定后交出可独立开始实验的 `design/`，实际运行与验证后交出足以单独写论文的 `report/`。每个有意义的进展在对应目录保存，按团队约定提交、同步并核对远端版本。
 
 新项目可用 `python3 <skill>/scripts/init_project.py <project-dir> --title "研究题目" --problem <题面文件>` 初始化。目标目录必须不存在；已有项目直接适配其结构。初始化不读取其他年份或复制金奖论文。
 

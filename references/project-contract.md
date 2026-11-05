@@ -4,6 +4,10 @@
 
 ## 初始化
 
+团队使用同一 Git 仓库或需要跨机器交接时，加 `--team` 建立四阶段工作区。此布局采用 `format_version=2`，题面摘要在 `design/problem.md`，六张表在 `experiment/records/`，表中路径仍相对研究仓库根目录。独立报告的附件清单则相对该报告目录。跨阶段操作见 [团队仓库与两次交接](team-handoff.md)。
+
+团队布局的项目审计还返回 `handoffs.design` 和 `handoffs.report`。完整项目的 `ready` 同时要求两个交接包、研究证据和稿件就绪。单独交方案或交总报告时使用 `handoff.py`，可以在尚未写稿时完成阶段验收。
+
 ```text
 python3 <skill>/scripts/init_project.py <new-project> --title "题目" --problem <problem.md>
 ```
@@ -23,7 +27,7 @@ CSV 用 UTF-8 与标准转义；引号必须闭合，数据列数必须与表头
 
 来源 locator 对 literature 允许 DOI/URL/书籍及页码，对 problem/data/derivation/assumption 使用本地相对文件路径，可在 `#` 后追加页码/定位。外部来源 verified 表示已人工核对支持内容，不是脚本自动联网认证。
 
-`project.json` 必须是标准 JSON 对象，不接受重复键或 NaN／Infinity 常量。字段为：非空字符串 `title`、字符串 `stage`、字符串 `paper_path`、整数 `format_version=1`（布尔值不能代替版本号）。stage 可为 analyze/research/model/compute/validate/write/deliver；`paper_path` 指完整稿源文件。状态是研究当前状态，不是操作日志。
+`project.json` 须为标准 JSON 对象，键唯一，数值有限。`title` 为非空字符串，`stage` 为 analyze/research/model/compute/validate/write/deliver 之一，`paper_path` 为完整稿源文件路径。整数 `format_version` 取 1（原布局）或 2（团队布局）。审计按版本定位证据表，使用相同的科学证据判据。
 
 ## 交付完整性检查
 
