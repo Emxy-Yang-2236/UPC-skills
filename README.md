@@ -9,7 +9,33 @@
 
 ## 1. 如何安装
 
-需要 Node.js 22.20.0 或更高版本。`-g` 表示全局安装，当前用户的所有 Codex 项目都可使用。
+### 准备 Node.js
+
+先用 `node -v` 查看版本。已有 **Node.js 22.20.0 或更高版本**，可直接跳到下面的「全局安装 skill」。需要安装时，按系统选择一条命令。
+
+**macOS（Homebrew）**
+
+```bash
+brew install node
+```
+
+**Windows（PowerShell，使用 WinGet）**
+
+```powershell
+winget install --id OpenJS.NodeJS.LTS --exact --source winget
+```
+
+**Linux / WSL（Bash 或 Zsh，通过 nvm 安装 Node.js 26 LTS）**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | NODE_VERSION=26 bash
+```
+
+安装后重新打开终端，用 `node -v` 和 `npx -v` 确认两者可用。macOS 或 Windows 也可使用 [Node.js 官方安装包](https://nodejs.org/zh-cn/download)。
+
+### 全局安装 skill
+
+`-g` 表示全局安装，当前用户的所有 Codex 项目都可使用。
 
 ```bash
 npx skills add Emxy-Yang-2236/UPC-skills --skill upc-physics --agent codex -g
