@@ -12,7 +12,7 @@
 python3 <skill>/scripts/init_project.py <new-project> --title "题目" --problem <problem.md>
 ```
 
-生成 `project.json`、`problem.md`、`research-state.md`、六份 CSV，以及 `src/`、`data/raw/`、`data/derived/`、`figures/`、`paper/`。不覆盖已有目录、文件或符号链接。`--problem` 可省略，此时题面文件明确标为待提供。题面及随技能分发的论文提纲会在创建目录前读取；输入不可读或提纲缺失时不会留下新项目。初始化返回 `ready=false`，复制题面不表示研究已经完成。
+生成 `project.json`、`problem.md`、`research-state.md`、六份 CSV，以及 `src/`、`data/raw/`、`data/derived/`、`figures/`、`paper/`。两种布局都提供待核实的 `contest-rules.md` 与论文目录内的模板、审阅记录和提交核对表；团队目录另带 AI 记录工具。它们都是待填写的工作材料。不覆盖已有目录、文件或符号链接。`--problem` 可省略，此时题面文件明确标为待提供。题面及随技能分发的模板会在创建目录前读取；输入不可读或模板缺失时不会留下新项目。初始化返回 `ready=false`，复制题面不表示研究已经完成。
 
 CSV 用 UTF-8 与标准转义；引号必须闭合，数据列数必须与表头一致。单元格中多个 ID/路径用分号分隔。保留表头，空表不是完成。使用稳定 ID（如 R1、S1、C1、V1）便于交接，不给每一句普通叙述都建登记行。参数的显式数值不得为 NaN／Infinity；允许有说明的区间或符号文本，其语义需人工检查。
 
@@ -51,4 +51,4 @@ python3 <skill>/scripts/audit_project.py <project>
 
 题面 → 要求 → 主张 → 推导/数据/图表；来源 → 参数/事实；运行 → 数据 → 验证 → 主张；论文只引用已建立的研究事实。
 
-保留科研所需的真实输入/输出与方法，不保存提示词、AI 回答、对话文本、AI 使用报告或模型耗用统计。审阅用的研究报告/论文是任务成果，不是聊天归档。
+保留科研所需的真实输入/输出与方法。AI 辅助论文写作按 [当届规则](contest-rules.md) 在研究项目内保存原始交互并纳入披露报告；这些记录不进入可分发 skill。研究审计不证明披露覆盖完整，也不证明符合当届提交要求。

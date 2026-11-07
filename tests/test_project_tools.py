@@ -16,6 +16,8 @@ import sys
 import tempfile
 import unittest
 
+from _platform_support import make_symlink
+
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -149,7 +151,7 @@ class InitializationTests(ProjectToolTestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(self.project.read_text(), "Keep this file")
         self.project.unlink()
-        self.project.symlink_to(self.directory / "nonexistent")
+        make_symlink(self, self.project, self.directory / "nonexistent")
         result = self.cli("init_project.py", self.project, "--title", "Replacement")
         self.assertNotEqual(result.returncode, 0)
         self.assertTrue(self.project.is_symlink())
@@ -164,7 +166,7 @@ class InitializationTests(ProjectToolTestCase):
 
     def test_source_symlink_cycle_fails_without_traceback_or_partial_project(self):
         source = self.directory / "cycle.md"
-        source.symlink_to(source.name)
+        make_symlink(self, source, source.name)
         result = self.cli("init_project.py", self.project, "--title", "Study", "--problem", source)
         self.assertNotEqual(result.returncode, 0)
         self.assertNotIn("Traceback", result.stderr)
@@ -332,28 +334,31 @@ class BoundaryTests(ProjectToolTestCase):
 
     def test_symlink_to_outside_is_rejected(self):
         link = self.project / "data/derived/external.txt"
-        link.symlink_to(self.outside)
+        make_symlink(self, link, self.outside)
         self.set_cell("claims", "artifact_paths", "data/derived/external.txt")
         self.assert_not_ready("path must stay inside")
 
     def test_symlink_to_internal_artifact_is_allowed(self):
         link = self.project / "data/derived/internal.txt"
-        link.symlink_to("derivation.md")
+        make_symlink(self, link, "derivation.md")
         self.set_cell("claims", "artifact_paths", "data/derived/internal.txt")
         result = audit_module.audit(self.project)
         self.assertTrue(result["ready"], result)
 
     def test_cyclic_and_dangling_symlinks_are_clear_diagnostics(self):
         link = self.project / "data/derived/loop.txt"
-        link.symlink_to("loop.txt")
+        make_symlink(self, link, "loop.txt")
         self.set_cell("claims", "artifact_paths", "data/derived/loop.txt")
         self.assert_not_ready()
         link.unlink()
-        link.symlink_to("missing.txt")
+        make_symlink(self, link, "missing.txt")
         self.assert_not_ready("missing or empty")
 
     def test_nul_in_a_path_does_not_crash(self):
-        self.set_cell("claims", "artifact_paths", "data/derived/invalid\x00.txt")
+        # Older Python CSV writers reject NUL before the audit can inspect it.
+        self.set_cell("claims", "artifact_paths", "data/derived/invalid_NUL_.txt")
+        path = self.project / "claims.csv"
+        path.write_bytes(path.read_bytes().replace(b"_NUL_", b"\x00"))
         self.assert_not_ready()
 
     def test_metadata_symlinks_cannot_escape_the_project(self):
@@ -364,7 +369,7 @@ class BoundaryTests(ProjectToolTestCase):
                 outside = self.directory / ("external-" + name)
                 outside.write_bytes(original)
                 path.unlink()
-                path.symlink_to(outside)
+                make_symlink(self, path, outside)
                 self.assert_not_ready("path must stay inside")
                 path.unlink()
                 path.write_bytes(original)
@@ -375,7 +380,7 @@ class BoundaryTests(ProjectToolTestCase):
                 result = audit_module.audit(root)
                 self.assertFalse(result["ready"])
         cycle = self.directory / "root-cycle"
-        cycle.symlink_to(cycle.name)
+        make_symlink(self, cycle, cycle.name)
         result = audit_module.audit(cycle)
         self.assertFalse(result["ready"])
 

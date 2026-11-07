@@ -9,6 +9,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+
+from _platform_support import make_symlink
 import zipfile
 
 
@@ -72,6 +74,18 @@ class ReleaseTests(unittest.TestCase):
         diagnostic = run("numerical_checks.py", "biquad", "--a1", "-1.9", "--a2", "0.88")
         self.assertEqual(diagnostic.returncode, 0, diagnostic.stderr)
         self.assertFalse(json.loads(diagnostic.stdout)["stable"])
+        prompt, response = self.folder / "prompt.txt", self.folder / "response.txt"
+        prompt.write_text("Synthetic exact input", encoding="utf-8")
+        response.write_text("Synthetic complete output", encoding="utf-8")
+        records = self.folder / "interactions"
+        collected = run("ai_report.py", "add", "--records", records,
+                        "--system", "Test fixture", "--purpose", "Portability check",
+                        "--prompt-file", prompt, "--response-file", response)
+        self.assertEqual(collected.returncode, 0, collected.stderr)
+        disclosed = run("ai_report.py", "render", "--records", records,
+                        "--output", self.folder / "ai-report.md")
+        self.assertEqual(disclosed.returncode, 0, disclosed.stderr)
+        self.assertFalse(json.loads(disclosed.stdout)["coverage_verified"])
 
     def test_manifest_cannot_escape_root_or_reuse_a_path(self):
         source = self.copy_payload()
@@ -87,7 +101,7 @@ class ReleaseTests(unittest.TestCase):
         source = self.copy_payload()
         link = source / "README.md"
         link.unlink()
-        link.symlink_to(ROOT / "README.md")
+        make_symlink(self, link, ROOT / "README.md")
         with self.assertRaisesRegex(ValueError, "Symlink"):
             builder.load_payload(source)
 

@@ -1,6 +1,6 @@
 ---
 name: upc-physics
-description: Guide UPC / UCP physics competition work from problem interpretation and modeling through simulation, validation and an evidence-based English paper. Use for contest research, Git-based team handoffs, executable experiment designs and standalone reports for writers.
+description: Complete UPC physics competition research and English papers from a problem or existing results, including defensible models, reproducible computation, critical review, current contest requirements and submission preparation. Use for UPC modeling, team handoffs, manuscript drafting and revision.
 license: MIT
 ---
 
@@ -8,11 +8,15 @@ license: MIT
 
 帮助参赛者完成可解释、可运行、可核查的物理研究，并根据真实结果写出完整论文。默认用中文讨论研究，用英文写参赛论文；尊重用户指定的语言、计算工具和格式。
 
+以充分回答题目、物理洞见和可信证据提高论文竞争力。获奖由评审和同届作品决定，完成流程、增加模型复杂度或审计通过均不代表达到某一奖级。
+
 首次安装、队内分享与调用示例见 [README.md](README.md)。
 
 ## 开始与路由
 
 先识别用户当前材料和所需交付：仅有题面、已有模型/代码、已有实验数据，或已有研究成果需要写作。直接进入相应阶段，不要求从头重做。首次应用时简短说明正在使用本技能。
+
+开始参赛项目、采用 AI 辅助写作或准备提交时，先读 [当届规则与 AI 披露](references/contest-rules.md)，及时保存真实输入输出。比赛执行或时间有限时读 [时间与研究取舍](references/competition-workflow.md)。改进已有论文、确定核心贡献或定稿时读 [论文竞争力与独立审阅](references/paper-quality.md)。这些参考也适用于只拿到报告的写作者。
 
 | 当前任务 | 按需读取的功能子技能 | 完成后交接 |
 | --- | --- | --- |
@@ -35,7 +39,7 @@ license: MIT
 
 1. 区分题目给定、来源事实、假设、推导、模拟与实测。程序未运行就没有仿真结果；实验未实施就没有测量数据。文献中的数值只能称作者报告值。
 2. 同题不同答案先对齐成功判据、参考系、初始条件和适用域。获奖论文提供方法经验，不能替代物理检查，也不是官方评分标准。
-3. 保留研究所需的代码、输入、参数来源、数据、图表和验证结论；不创建 AI 使用记录、提示词/回答档案、对话导出或 AI 使用报告。
+3. 保留研究所需的代码、输入、参数来源、数据、图表和验证结论。AI 辅助参赛写作按当届规则保存真实工具信息、原始提问与完整可见输出，生成披露报告；无法获得完整记录时明确缺口，处理方法见 [规则与披露](references/contest-rules.md)。
 4. 用户已授权的研究工作持续推进。只有会实质改变结果且不能合理推定的信息才询问；先完成不受缺失信息影响的工作。缺数据时可以做清楚标注的条件分析，不把假设值写成实测。
 5. 初始开发材料为 2021、2022、2023、2025 年题目与 16 篇论文。保留题仅在用户明确授权后启用，不自动扫描整个 `example/`。解答、数据和论文保存在独立研究项目。允许从已授权复盘提炼通用方法，但已用于迭代的题目此后只算回归材料，不能继续充当未见题的泛化证据。
 6. 赛事格式、时限和提交规则以本次用户提供或核实的规则为准，不把往年论文版式、其他竞赛惯例或第三方模板当现行规定。
@@ -46,7 +50,9 @@ license: MIT
 
 新项目可用 `python3 <skill>/scripts/init_project.py <project-dir> --title "研究题目" --problem <题面文件>` 初始化。目标目录必须不存在；已有项目直接适配其结构。初始化不读取其他年份或复制金奖论文。
 
-读 [研究项目约定](references/project-contract.md) 了解输入表、科学证据和状态交接。正式交付前运行 `python3 <skill>/scripts/audit_project.py <project-dir>`；脚本仅检查结构、来源关联和材料完整性，物理正确性仍由验证模块判断。
+按任务规模保存材料：单点检查、短篇练习或局部改稿可以只保留必要推导、脚本、结果与稿件，不强制建立六张登记表和团队目录。完整参赛研究、长期接续或跨人交接时使用下面的项目约定。
+
+读 [研究项目约定](references/project-contract.md) 了解输入表、科学证据和状态交接。采用该约定的研究在正式交付前运行 `python3 <skill>/scripts/audit_project.py <project-dir>`；脚本仅检查结构、来源关联和材料完整性，物理正确性仍由验证模块判断。轻量任务报告实际完成的检查，不宣称通过未执行的审计。
 
 按需使用 `scripts/numerical_checks.py` 做二阶滤波器极点检查或均匀加密序列的收敛诊断。它不是通用物理求解器。实际模型按题目实现，先用最简单的可检验版本建立基线。
 
@@ -63,3 +69,5 @@ license: MIT
 完整求解的交付包括：对每项题目要求的回答；假设、模型与来源；实际运行的代码/实验与数据；适用的验证及局限；完整论文与可编辑源文件；需要导出时的可读导出稿。若用户只要求其中一部分，就以该部分为完成范围。
 
 遇到证据不足，写出有依据的部分并标明缺口，反馈给对应模块。论文草稿可以完整成篇，但未解决关键缺口时不标为可提交终稿。不要为了凑模板添加不存在的实验、显著性、参考文献或结果。
+
+定稿按 [独立审阅](references/paper-quality.md) 消除重大问题，依据 [提交核对表](assets/submission-checklist.md) 检查实际导出文件。研究完整性、物理验证、论文审阅、规则核验和 AI 记录完整性分别报告。准备好提交材料不包含代发邮件或上传的授权。

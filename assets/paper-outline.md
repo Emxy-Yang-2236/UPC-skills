@@ -18,3 +18,9 @@ Status: working outline. Replace the entries with actual research before treatin
 6. Conclusion: answer the problem directly within the established limits.
 
 Write the abstract last. Adapt this organization to the problem; a numerical-methods study and an open design comparison need not have identical sections. No section authorizes inventing missing research.
+
+## Central insight and review
+
+State the dominant mechanism, the supported difference from the baseline, and the conditions under which the answer or preferred design changes. Select the figures that establish these claims, rather than filling a predetermined figure count.
+
+For a contest submission, verify the current first-page, anonymity and AI-disclosure requirements. Include the actual required AI-use report at the end, review the complete exported file, and record unresolved findings separately from research completeness.

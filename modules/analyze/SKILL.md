@@ -7,6 +7,8 @@ description: Interpret a UPC problem, identify outputs and constraints, compare 
 
 输入：原始题面、已有研究状态、用户的时间/资源约束。输出：逐项可检查的题目要求、关键定义、候选路线及最小可检验模型。
 
+参赛任务先核实 [当届规则](../../references/contest-rules.md)，限时任务按 [比赛执行方案](../../references/competition-workflow.md) 确定基线、模型冻结和写作时间；记录真实剩余时间，不把建议阶段当作硬性比赛规则。
+
 ## 执行
 
 1. 读完整题面，保留原文；检查截断、遗漏公式/图示。把“解释、比较、求阈值、给方案、写操作说明”转换为具体交付，编号 R1、R2…；把补充研究目标与原题要求分开。

@@ -9,6 +9,8 @@ agents/openai.yaml
 assets/matlab_smoke.m
 assets/paper-outline.md
 assets/paper.tex
+assets/review.md
+assets/submission-checklist.md
 assets/team/README.md
 assets/team/design/README.md
 assets/team/design/model.md
@@ -30,6 +32,9 @@ modules/validate/SKILL.md
 modules/write/SKILL.md
 references/branches/design.md
 references/branches/mechanism.md
+references/competition-workflow.md
+references/contest-rules.md
+references/paper-quality.md
 references/cases/2021.md
 references/cases/2022.md
 references/cases/2023.md
@@ -42,6 +47,7 @@ references/team-handoff.md
 references/third-party.md
 scripts/_project_schema.py
 scripts/audit_project.py
+scripts/ai_report.py
 scripts/handoff.py
 scripts/init_project.py
 scripts/numerical_checks.py

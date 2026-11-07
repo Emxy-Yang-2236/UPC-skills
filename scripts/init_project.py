@@ -31,7 +31,7 @@ def team_files(source, problem_bytes):
              ".gitignore": (templates / "gitignore").read_bytes(),
              ".gitattributes": (templates / "gitattributes").read_bytes(),
              "tools/LICENSE": (SKILL / "LICENSE").read_bytes()}
-    for script in ("audit_project.py", "_project_schema.py", "handoff.py"):
+    for script in ("audit_project.py", "_project_schema.py", "handoff.py", "ai_report.py"):
         files[f"tools/{script}"] = (SKILL / "scripts" / script).read_bytes()
     for kind, documents in DOCUMENTS.items():
         for document in documents:
@@ -90,6 +90,16 @@ def main():
         "stage": "analyze", "paper_path": "paper/manuscript.md",
     }, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
     files["paper/outline.md"] = (SKILL / "assets/paper-outline.md").read_bytes()
+    for source_name, target_name in (("paper.tex", "template.tex"),
+                                     ("review.md", "review.md"),
+                                     ("submission-checklist.md", "submission-checklist.md")):
+        files["paper/" + target_name] = (SKILL / "assets" / source_name).read_bytes()
+    files["contest-rules.md"] = (
+        "# Contest requirements\n\nStatus: pending current-rule verification.\n\n"
+        "Official source / checked date:\nTeam number / problem:\n"
+        "Deadline with time zone:\nCurrent paper and AI-disclosure requirements:\n"
+        "Actual AI record coverage / gaps:\n"
+    ).encode("utf-8")
     for name, fields in TABLES.items():
         rows = []
         if name == "sources" and source:

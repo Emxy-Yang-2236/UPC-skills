@@ -1,60 +1,38 @@
 # 维护与发布
 
-本仓库保存可分发 skill 的完整源码。研究题目、原始论文、求解结果与个人配置请保存在仓库之外。`README.md` 是面向使用者的唯一安装与使用说明。
+本仓库保存可分发 skill 的完整源码。此本地 v0.4.0 基于 [上游 UPC-skills](https://github.com/Emxy-Yang-2236/UPC-skills) 的 main 源码归档修改，未发布到上游；归档下载不包含 Git 历史。研究题目、求解结果、原始论文和个人配置保存在源码仓库之外。
 
-## 首次上传已准备的版本
+## 修改与验证
 
-本地目录已初始化为 Git 仓库。首次上传前可运行 `git status`、`git log -1 --oneline` 和 `git tag --list` 查看提交与版本标签。在 GitHub 创建一个空的公开仓库，名称建议 `upc-physics`；不用额外生成 README、LICENSE 或 `.gitignore`，这些文件已在本地提供。
+1. 按实际使用反馈修改模块、参考文件或工具。新增资源必须有可到达的入口；保留规则来源与核实日期。
+2. 更新 VERSION、CHANGELOG、README 和 release-files.txt，保持元数据一致。
+3. 用支持 UTF-8 的 Python 运行：
 
-在本目录打开终端，将 `REPOSITORY_URL` 换成你新建仓库的 HTTPS 地址，执行：
+~~~text
+python -m unittest discover -s tests -p 'test_*.py'
+python tools/build_release.py --output dist/candidate
+~~~
 
-```text
-git remote add origin REPOSITORY_URL
-git push -u origin main
-git push origin v0.2.0
-```
+Windows 下可启用 PYTHONUTF8=1。部分受限执行环境不允许临时目录重命名，应在正常本地权限下运行相关检查。账户没有符号链接创建特权时，相应测试明确跳过；不要把跳过写成通过。其他失败仍需处理。
 
-如果已有 `origin`，先用 `git remote -v` 核对地址再操作。认证使用你自己的 GitHub 登录方式。
+构建只读取明确清单，拒绝缺失、越界、符号链接及断开的包内文档链接。ZIP 固定顺序、时间戳和权限，相同输入产生相同字节；.skill 是同一 ZIP 的另一个扩展名。manifest.json 与 SHA256SUMS 提供完整性核对。输出目录已有不同内容时使用新的目录，不覆盖已发布包。
 
-在 GitHub 的 Releases 页面创建 `v0.2.0` Release，选择刚上传的同名标签，标题填写 `UPC Physics v0.2.0`。正文可使用本地 `.github/release-notes-v0.2.0.md`，附件从 `dist/v0.2.0/` 选择以下四个文件：
+自动测试只验证工具行为和打包，不判断物理正确、规则覆盖或获奖能力。按 [独立效果检验](references/paper-quality.md) 在隔离目录保留真实练习产物。源模板需在具备 TeX 的环境实际编译并渲染检查；本机没有编译器时记录未验证，不能称已通过 PDF 检查。
 
-- `upc-physics-v0.2.0.zip`
-- `upc-physics-v0.2.0.skill`
-- `manifest.json`
-- `SHA256SUMS`
+## 同步本地定制技能
 
-`dist/` 已被 Git 忽略，因此通过 Release 附件上传，无需提交生成包。若上传前修改了 skill 或说明文件，请先重新测试、打包并提交，再确保版本标签指向该提交；上面步骤假设使用已准备的版本。
+以本地源码为准，在更新已安装的 upc-physics 前，将旧目录备份到技能发现目录之外。按 release-files.txt 同步使用文件，核对内容摘要；源码维护工具和测试可单独保留。不要同时安装同名副本造成发现歧义。
 
-## 修改
+上游网络安装命令不会取得本地修改；使用前核对版本。将来合并上游变更时保留本地改动，再运行测试与打包。
 
-1. 在本仓库修改需要维护的模块、参考文件或工具；核对来源和结论适用范围。
-2. 更新 `VERSION`、`CHANGELOG.md` 和 README 中的版本及下载文件名。新增随包文件时同步修改 `release-files.txt`。
-3. 运行现有工具回归与发布检查：
+## Git 与发布
 
-```text
-python3 -m unittest discover -s tests -p 'test_*.py'
-python3 tools/build_release.py --output dist/candidate
-```
+如需 Git 历史，网络恢复后可在另一个目录正常克隆上游，再将已审查的本地改动迁入。若只需在本地跟踪，也可自行初始化 Git 并设置上游地址，清楚区分源码基线与本地提交。
 
-构建只读取清单中的普通文件，拒绝符号链接、越界路径、缺失文件及断开的包内文档链接。ZIP 固定顺序、时间戳、权限并使用无压缩存储，因此相同输入在不同主机上生成相同字节。`.skill` 是同一 ZIP 的另一个文件扩展名。`manifest.json` 记录文件及包的 SHA-256，`SHA256SUMS` 还覆盖清单本身。
+推送、创建 Release 或代提交比赛论文须有相应授权。准备发布时先审查差异、测试和包内容；标签指向相应源码提交，附件使用同一构建的 ZIP、.skill、manifest.json 和 SHA256SUMS。已经发布的版本不替换内容。
 
-若输出目录中已有内容不同的发布文件，构建会停止；改用新的输出目录，核对后保留需要的版本。发布后的版本及附件应保持稳定，更改内容时增加版本号。
+## 贡献与许可
 
-## GitHub 发布
+欢迎提交具体错误复现、建模检查、写作流程和可移植性改进。案例反馈应提炼通用方法；具体赛题解答、未授权原始材料和真实 AI 交互记录不进入公开 skill。
 
-在完整源码仓库中使用 Git 与已登录的 GitHub CLI。先核对 `git diff`、测试结果和 `git status`，仅提交预期文件。下面的命令以 `v0.2.0` 为例；后续发布需替换版本、路径和发布说明文件。
-
-```text
-git push origin main
-git tag -a v0.2.0 -m "UPC Physics v0.2.0"
-git push origin v0.2.0
-gh release create v0.2.0 dist/candidate/upc-physics-v0.2.0.zip dist/candidate/upc-physics-v0.2.0.skill dist/candidate/manifest.json dist/candidate/SHA256SUMS --verify-tag --title "UPC Physics v0.2.0" --notes-file .github/release-notes-v0.2.0.md
-```
-
-发布前应已有包含当前版本的提交；标签必须指向通过检查的提交。首次准备的本地 `v0.2.0` 标签已存在时直接推送即可，不重复创建。仓库 CI 会运行 Python 工具测试和构建；基础 MATLAB 检查需在具备软件与许可的机器另行运行。CI 不替代物理建模审查。
-
-## 贡献
-
-欢迎提交具体的错误复现、模型检查改进、可移植性修复或写作流程改进。案例反馈应提炼可迁移的方法，保留事实、假设和推断的边界；不要在改进 skill 时混入某个练习的完整解答或无权分发的原始材料。
-
-贡献者须有权提交所提供的内容，并接受本仓库原创部分采用的 [MIT 许可](LICENSE)。采用第三方代码或文字时，应单独核对兼容性、保留所需许可与署名，并更新 [来源说明](NOTICE.md)。
+原创内容适用 [MIT 许可](LICENSE)。采用第三方内容时核对许可、保留署名并更新 [来源说明](NOTICE.md)。

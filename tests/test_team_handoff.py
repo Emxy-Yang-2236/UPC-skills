@@ -8,6 +8,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+
+from _platform_support import make_symlink
 import zipfile
 
 from test_project_tools import ProjectToolTestCase, audit_module
@@ -158,7 +160,7 @@ class HandoffTests(unittest.TestCase):
     def test_symlinked_material_directory_and_traversal_fail(self):
         self.fill_design()
         folder = self.project / "design"
-        (folder / "external").symlink_to(self.base, target_is_directory=True)
+        make_symlink(self, folder / "external", self.base, target_is_directory=True)
         with (folder / "materials.csv").open("a", newline="") as handle:
             writer = csv.writer(handle)
             writer.writerow(["external/original.txt", "input", "External directory"])
